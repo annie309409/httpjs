@@ -1,7 +1,6 @@
 # 디폴트 무시된 파일
 /.idea
 /httpjs.iml
-/package.json
 /node_modules
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
