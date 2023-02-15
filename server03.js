@@ -58,8 +58,6 @@ const server=  http.createServer((req, res)=>{
     // 주소를보고 요청을알아낼수있는것이 rest의 장점이다.
     // http를 사용하면 클라이언트가누구든상관없이 같은방식으로 서버와소통
 
-
-
 });
 server.listen(port,()=>{
     console.log('서버가 실행중입니다. 중지하려면 ctrl+c!');
