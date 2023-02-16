@@ -1,0 +1,53 @@
+{{#section 'css'}}
+{{/section}}
+{{#section 'script'}}
+<script>
+    let sjbtn = document.querySelector('#btns');
+
+    let processSj = ()=>{
+        let frm = document.sjfrm;
+        if(frm.name.value=='') {
+            alert('이름!');
+        } else if(frm.kor.value=='') {
+            alert('국어!');
+        } else if(frm.eng.value=='') {
+            alert('영어!');
+        } else if(frm.math.value=='') {
+            alert('수학');
+        }else{
+            frm.method='post';
+            frm.enctype='application/x-www-form-urlencoded';
+            frm.submit();
+        }
+    };
+
+    sjbtn.addEventListener('click',(eve)=>{
+        eve.preventDefault();
+        processSj();
+    });
+
+</script>
+{{/section}}
+
+<h1>성적 등록 페이지 입니다.🤦‍♀️</h1>
+<form name="sjfrm">
+    <div>
+        <label for="name">이름</label>
+        <input type="text" id="name" name="name">
+    </div>
+    <div>
+        <label for="kor">국어</label>
+        <input type="text" id="kor" name="kor">
+    </div>
+    <div>
+        <label for="eng">영어</label>
+        <input type="text" id="eng" name="eng">
+    </div>
+    <div>
+        <label for="math">수학</label>
+        <input type="text" id="math" name="math">
+    </div>
+    <div>
+        <button type="submit" id="btns">입력완료</button>
+    </div>
+</form>

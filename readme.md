@@ -1,6 +1,11 @@
 # Node Server
 * 노드에 기본적으로 존재하는 내장함수를 사용하여 로컬 서버를 열 수 있다.
-## [사용방법](/server01.js)
+## 서버통신
+* 서버자원가져올때 :get을 사용한다. 만약, 데이터를 서버로보내야 하는경우에 쿼리스트링을 사용한다.
+* 서버에 자원을 새로등록할때 :post를 사용한다.
+* 주소를보고 요청을알아낼수있는것이 REST의 장점이다.
+* http를 사용하면 클라이언트가누구든상관없이 같은방식으로 서버와소통할 수 있다.
+## [사용방법](/server01.js)<br>
 1. 내장 라이브러리인 http를 불러온다 
 ```javascript
 const http =  require('http');
@@ -59,11 +64,6 @@ const server=  http.createServer((req, res)=>{
 > 결과<br>
 > ![이미지](./static/img/result0216005.png) <br>
 
-## 서버 통신
-* 서버자원가져올때 :get을 사용한다. 만약, 데이터를 서버로보내야 하는경우에 쿼리스트링을 사용한다.
-* 서버에 자원을 새로등록할때 :post를 사용한다.
-* 주소를보고 요청을알아낼수있는것이 REST의 장점이다.
-* http를 사용하면 클라이언트가누구든상관없이 같은방식으로 서버와소통할 수 있다.
 
 # Express
 * 가장 인기있는 Node 웹 프레임워크로
@@ -77,7 +77,7 @@ const server=  http.createServer((req, res)=>{
 * controller: 모델에서 요청된 데이터를 가져오고, 뷰를 이용해서 데이터를 표시하는 HTML 페이지를 생성한 다음, 브라우저에서 이것을 볼 수 있도록 반환
 * view: 데이터를 렌더링하는 데 사용하는 HTML 템플릿
 
-## Node Server
+## Express Server
 * 노드에서 로컬포트를 열어 서버를 열 수있다.
 ### 사용방법 
 1. 가져오기
@@ -160,9 +160,176 @@ app.use((error,req,res)=>{
 
 ```
 
+## [Handlebars(view)](./app.js)
+* 라우팅처리에 의해서 직접적으로 html파일을 가져와 응답해줄 수 있는데, 이때 UI들을 모듈화해서 관리하면 유지보수가 용이하다.
+* 이때, 사용하는 UI 템플릿은  여러가지가 있지만, 그 중 핸들바(hbs)를 사용해 보고자한다.
+### 사용방법 
+1. main(app.js)안에 핸들바를 설치한다.
+```javascript
+const {engine}= require('express-handlebars');
+```
+2. view엔진설정에 핸들바를 설정해준다.
+* 여기서, helpers란 UI를 모듈화하여 따로 관리할 수 있게 적용해주는 엔진이다.
+```javascript
+app.engine('hbs',engine({
+    // 확장자명
+    extname: '.hbs',
+    // 기본으로 제공되는것, 레이아웃 : 없다면 main.hbs가 자동으로 설정됨
+    //기본 레이아웃은 반드시 views/layouts/안에 존재시켜야 함
+    defaultLayout : 'layout',
+    //UI를 모듈화하여 따로 관리할 수 있게 적용
+    helpers: {
+        section: function(name, options) {
+            if(!this._sections) this._sections = {}
+            this._sections[name] = options.fn(this)
+            return null
+        },
+    },
+}))
+```
+3. 핸들바 파일들이 들어있는 views 폴더에 대해 경로로 설정해 주고 엔진을 추가한다.
+```javascript
+app.set('views',path.join(__dirname,'views'));
+//핸들바 뷰 엔진 추가
+app.set('view engine','hbs');
+```
+
+4. 핸들바사용을 위한 폴더를 새로 생성하는데, app.js위치 기준에서 views라는 폴더를 생성한다.
+> 예시<br>
+> ![이미지](./static/img/result0216012.png) <br>
+
+
+5. views폴더 안에 기본 고정탬플릿 역할을 하는 layout을 만들기 위해 layouts폴더를 생성한다.
+> 예시<br>
+> ![이미지](./static/img/result0216013.png) <br>
+
+6. layouts폴더 안에 기본 고정 템블릿인 layout.hbs를 만든다. (만약 layout이 없다면 main으로 자동 생성됨)
+> 예시<br>
+> ![이미지](./static/img/result0216014.png) <br>
+
+7. layouts파일엔 다음과 같이 고정 템플릿 내용을 작성한다.
+* 이때, 사용하게 될 header나 footer같은 고정값의 템플릿모듈은 partials 폴더안에서 관리하며, partials폴더안의 파일명을 {{>파일명}} 형식으로 작성하면 된다.
+* css와 script와 같이 UI가 아닌 파일들의 경우엔 2.번에서 등록한 helpers의 section엔진을 사용하여 {{{_section.섹션명}}}이 들어가면 된다.
+* {{{body}}}는 라우터로 불러와 질 페이지의 내용들이 업데이트 된다.
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    {{{_sections.css}}}
+</head>
+<body>
+{{>header}}
+
+{{{ body }}}
+
+{{>footer}}
+
+{{{_sections.script}}}
+</body>
+</html>
+```
+
+8. views폴더 안에 partials라는 폴더를 만들고 그 안에 header와 footer등 고정되는 UI템플릿 파일을 저장한다. 
+* 이때 모든 html역할을 하는 파일들은 .hbs확장자를 준수한다.
+> 예시<br>
+> ![이미지](./static/img/result0216015.png) <br>
+
+9. 라우터를 통해서 지정한 파일들의 내용을 작성한다.
+* 여기에서 style혹은 script는 아까 7번 layout에서 고정한 내용과 같이 section을 사용하면 된다.
+* 사용방법은 {{#section '섹션명'}} 형식으로 입력하면 된다.
+* index.hbs
+```hbs
+{{#section 'css'}}
+    <style>
+        h1{
+            color:green;
+        }
+    </style>
+{{/section}}
+
+
+<h1>인덱스 페이지입니다 👧</h1>
+<img src="/img/giraff.jpg">
+
+{{#section 'script'}}
+    <script>
+        alert('??');
+    </script>
+{{/section}}
+
+```
+* about.hbs
+```hbs
+{{#section 'css'}}
+    <style>
+        h1{
+            color:blue;
+        }
+    </style>
+{{/section}}
+<h1>어바웃 페이지입니다 👀</h1>
+
+```
+* user.hbs
+```hbs
+{{#section 'css'}}
+    <style>
+        h1{
+            color:red;
+        }
+    </style>
+{{/section}}
+<h1>유저 페이지입니다 👌</h1>
+
+
+```
+
+10. 라우터 모듈을 수정한다.
+* 전과 같이 path를 활용할 필요가 없고 render를 활용하여 파일명과 부가적으로 들어갈 parameter에 대한 값을 입력해주면 된다.
+* routes/index.js
+```javascript
+const express =  require('express');
+const path = require('path');
+const router = express.Router();
+
+router.get('/',(req, res)=>{
+
+    res.render('index',{title:'index페이지'});
+});
+
+module.exports = router;
+```
+* routes/about.js
+```javascript
+const express =  require('express');
+const path = require("path");
+const router = express.Router();
+
+router.get('/',(req, res)=>{
+
+    res.render('about',{title:'어바웃페이지'});
+});
+
+module.exports = router;
+
+```
+* routes/user.js
+```javascript
+const express =  require('express');
+const path = require("path");
+const router = express.Router();
+
+router.get('/',(req, res)=>{
+
+    res.render('user',{title:'유저페이지'});
+});
+module.exports = router;
+
+```
 
 ## Controllor
-
 
 ## 모놀리스 개발방식
 ## 마이크로서비스 개발방식
