@@ -15,7 +15,15 @@ app.engine('hbs',engine({
     extname: '.hbs',
     // 기본으로 제공되는것, 레이아웃 : 없다면 main.hbs가 자동으로 설정됨
     //기본 레이아웃은 반드시 views/layouts/안에 존재시켜야 함
-    defaultLayout : 'layout'
+    defaultLayout : 'layout',
+    //UI를 모듈화하여 따로 관리할 수 있게 적용
+    helpers: {
+        section: function(name, options) {
+            if(!this._sections) this._sections = {}
+            this._sections[name] = options.fn(this)
+            return null
+        },
+    },
 }))
 app.set('views',path.join(__dirname,'views'));
 //핸들바 뷰 엔진 추가
