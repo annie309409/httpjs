@@ -3,6 +3,7 @@
 /httpjs.iml
 /node_modules
 /package-lock.json
+/dbconfig.js
 
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node

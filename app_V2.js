@@ -7,7 +7,7 @@ const  userRouter = require('./routes/user');
 const path = require("path");
 const logger = require('morgan'); //로그출력기
 
-//form 처리기
+//form 처리기 미들웨어
 const bodyParser = require('body-parser');
 
 //미들웨어 등록 및 설정
@@ -68,6 +68,10 @@ app.use((err,req, res,next)=>{
 app.listen(port,()=>{
     console.log('express 서버가 실행중입니다. 중지하려면 ctrl+c!');
 });
+
+
+
+
 
 
 //로그설정

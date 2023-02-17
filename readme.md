@@ -311,9 +311,7 @@ router.get('/',(req, res)=>{
 
     res.render('about',{title:'어바웃페이지'});
 });
-
 module.exports = router;
-
 ```
 * routes/user.js
 ```javascript
@@ -326,12 +324,15 @@ router.get('/',(req, res)=>{
     res.render('user',{title:'유저페이지'});
 });
 module.exports = router;
-
 ```
 
 ## Controllor
 
 ## 모놀리스 개발방식
+* 한두페이지 안에 모든 기능을 넣어 개발하는 방식
+
 ## 마이크로서비스 개발방식
 * 기능별로 서버를 따로만들어서 개발하는방식
 * e.g. react + express SPA방식
+
+온프레미스 , 클라우드
