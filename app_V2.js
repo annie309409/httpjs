@@ -1,14 +1,19 @@
 const express = require('express');
 const app =  express();
-const port = process.env.PORT || 3002;
+const port = process.env.PORT || 3008;
 const  indexRouter = require('./routes/index');
 const  aboutRouter = require('./routes/about');
 const  userRouter = require('./routes/user');
 const path = require("path");
 const logger = require('morgan'); //로그출력기
+//oracle 초기화 불러오기
+const oracledb= require('./models/Oracle');
 
 //form 처리기 미들웨어
 const bodyParser = require('body-parser');
+
+//오라클 인스턴스 클라이언트
+oracledb.initConn();
 
 //미들웨어 등록 및 설정
 app.use(express.json());

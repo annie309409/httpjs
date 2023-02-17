@@ -1,0 +1,25 @@
+{{#section 'css'}}
+{{/section}}
+
+<h1>성적 전체 리스트 입니다.😂</h1>
+<table>
+    <tr>
+        <th>학생번호</th>
+        <th>이름</th>
+        <th>국어</th>
+        <th>영어</th>
+        <th>수학</th>
+        <th>등록일</th>
+    </tr>
+<!--    본문 리스트행 시작-->
+    {{#sjs}}
+    <tr>
+        <td>{{sjno}}</td>
+        <td><a href="/viewsungjuk?sjno={{sjno}}">{{name}}</a></td>
+        <td>{{kor}}</td>
+        <td>{{eng}}</td>
+        <td>{{math}}</td>
+        <td>{{regdate}}</td>
+    </tr>
+    {{/sjs}}
+</table>
